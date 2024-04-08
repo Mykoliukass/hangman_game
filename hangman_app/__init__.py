@@ -13,13 +13,13 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
     db.init_app(app)
 
-    from .routes import routes
-    from .auth import auth
+    from .routes.routes import routes
+    from .routes.auth import auth
 
     app.register_blueprint(routes, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
 
-    from .models import User, Game
+    from .models.models_sql import User
 
     with app.app_context():
         db.create_all()

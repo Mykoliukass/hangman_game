@@ -1,12 +1,6 @@
-from . import db
+from hangman_app import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
-
-
-class Game(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    word = db.Column(db.String())
-
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
