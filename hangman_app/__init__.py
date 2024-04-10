@@ -2,9 +2,18 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from .models.mongo_functions import MongoCRUD
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
+
+HOST = "localhost"
+PORT = 27017
+DATABASE_NAME = "Hangman_games"
+# These should be parametrized and made global for sh and other scripts
+
+
+game_db = MongoCRUD(host=HOST, port=PORT, database_name=DATABASE_NAME)
 
 
 def create_app():
@@ -23,6 +32,17 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+    # from . import game_db
+
+    # WORD_COLLECTION = "hangman_game_words"
+    # game_db.generate_and_insert_words(collection_name=WORD_COLLECTION, word_count=20)
+    # game_db.create_game(
+    #     game_collection_name="hangman_games",
+    #     word_collection_name="hangman_game_words",  # Corrected typo: "hamgman" to "hangman"
+    #     user_id="1545",
+    # )  <- it was just to try
+    
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"

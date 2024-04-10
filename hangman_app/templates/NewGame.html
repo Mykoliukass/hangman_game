@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>New Game</h1>
+<div>
+    <p>User ID: {{ game.user_id }}</p>
+    <p>Number of Guesses: {{ game.guesses }}</p>
+    <p>Health Points: {{ game.hp }}</p>
+    <p>Word: 
+        {% for letter in game.word %}
+            {% if letter in game.guessed_letters %}
+                {{ letter }}
+            {% else %}
+                _
+            {% endif %}
+        {% endfor %}
+    </p>
+    <form action="/NewGame" method="POST">
+        <label for="letter">Enter a letter:</label>
+        <input type="text" id="letter" name="letter" maxlength="1" required>
+        <input type="submit" value="Submit">
+    </form>
+    <p>Chosen letters:
+        {% for letter in game.guessed_letters %}
+            {{ letter }}
+        {% endfor %}
+    </p>
+
+    <p>Game status: {{ game.game_status }}</p>
+</div>
+{% endblock %}

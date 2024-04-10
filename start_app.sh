@@ -1,12 +1,13 @@
+# Check if MongoDB container is already running
 if [ "$(docker ps -q -f name=hangman_games-mongo)" ]; then
     echo "MongoDB container is already running."
 else
-    # Start MongoDB Docker container
-    docker run -d -p 27017:27017 --name hangman_games-mongo mongo:latest
+    # Start MongoDB Docker container if not already running
+    docker start hangman_games-mongo
     echo "MongoDB container started."
 fi
 
-# Wait for MongoDB to start
+# Wait for MongoDB to start (if needed)
 echo "Waiting for MongoDB to start..."
 sleep 5
 

@@ -79,116 +79,10 @@ class MongoCRUD:
         except PyMongoError as err:
             print(f"An error occurred: {err}")
 
-    def delete_one_document(
-        self, collection_name: str, query: Dict
-    ) -> Union[int, None]:
-        try:
-            collection = self.get_collection(collection_name)
-            result = collection.delete_one(query)
-            return result.deleted_count
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def delete_many_documents(
-        self, collection_name: str, query: Dict
-    ) -> Union[int, None]:
-        try:
-            collection = self.get_collection(collection_name)
-            result = collection.delete_many(query)
-            return result.deleted_count
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_equal(
-        self, collection_name: str, key: str, value: int, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$eq": value}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_greater_than(
-        self, collection_name: str, key: str, value: int, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$gt": value}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_greater_or_equal(
-        self, collection_name: str, key: str, value: int, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$gte": value}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_specified_values(
-        self, collection_name: str, key: str, values_list: list, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$in": values_list}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_less_than(
-        self, collection_name: str, key: str, value: int, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$lt": value}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_less_or_equal(
-        self, collection_name: str, key: str, value: int, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$lte": value}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_not_equal(
-        self, collection_name: str, key: str, value: int, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$ne": value}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
-    def find_all_instead_of(
-        self, collection_name: str, key: str, values_list: list, parameters={}
-    ) -> Union[List[Dict], None]:
-        query = {key: {"$nin": values_list}}
-        try:
-            collection = self.get_collection(collection_name)
-            documents = collection.find(query, parameters)
-            return list(documents)
-        except PyMongoError as err:
-            print(f"An error occurred: {err}")
-
     def generate_and_insert_words(self, collection_name: str, word_count: int):
-        with open("Z:\CodeAcademy\hangman_game\hangman_app\extra_files/english_words.txt", "r") as file:
+        with open(
+            "Z:\CodeAcademy\hangman_game\hangman_app\extra_files/english_words.txt", "r"
+        ) as file:
             english_words = [line.strip() for line in file]
 
         words = set()
@@ -202,3 +96,17 @@ class MongoCRUD:
         documents = [{"word": word} for word in words]
 
         self.insert_many_documents(collection_name, documents)
+
+    def get_random_word(self, word_collection_name):
+        try:
+            word_collection = self.get_collection(word_collection_name)
+            random_document_cursor = word_collection.aggregate(
+                [{"$sample": {"size": 1}}]
+            )
+            random_document = next(
+                random_document_cursor
+            ) 
+            random_word = random_document["word"]
+            return random_word
+        except PyMongoError as err:
+            print(f"An error occurred while fetching random word: {err}")
