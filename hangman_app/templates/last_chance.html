@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Guess the Whole Word</h1>
+<div>
+    <p>You have exhausted all your chances to guess individual letters.</p>
+    <img src="{{ url_for('static', filename='health_0.png') }}" alt="You are dead">
+    <p>Guess the whole word:</p>
+    <form action="/NewGame" method="POST">
+        <label for="whole_word">Enter the whole word:</label>
+        <input type="text" id="whole_word" name="whole_word" required>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock %}

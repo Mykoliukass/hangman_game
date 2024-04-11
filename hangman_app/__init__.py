@@ -17,7 +17,7 @@ game_db = MongoCRUD(host=HOST, port=PORT, database_name=DATABASE_NAME)
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="static")
     app.config["SECRET_KEY"] = "hjshjhdjah kjshkjdhjs"
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
     db.init_app(app)
@@ -36,13 +36,12 @@ def create_app():
     # from . import game_db
 
     # WORD_COLLECTION = "hangman_game_words"
-    # game_db.generate_and_insert_words(collection_name=WORD_COLLECTION, word_count=20)
+    # game_db.generate_and_insert_words(collection_name=WORD_COLLECTION, word_count=2000)  # uncomment only if you want to add new words
     # game_db.create_game(
     #     game_collection_name="hangman_games",
-    #     word_collection_name="hangman_game_words",  # Corrected typo: "hamgman" to "hangman"
+    #     word_collection_name="hangman_game_words",
     #     user_id="1545",
     # )  <- it was just to try
-    
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"

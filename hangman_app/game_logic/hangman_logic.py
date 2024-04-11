@@ -69,16 +69,12 @@ class HangmanGame:
             if guessed_letter not in self.random_word:
                 self.health_points -= 1
             self.update_game_status()
-            print(self.guessed_letters)
-            # Construct the update dictionary with updated fields
             update_dict = {
                 "guessed_letters": self.guessed_letters,
                 "guesses": self.guess_count,
                 "hp": self.health_points,
                 "game_status": self.game_status,
             }
-
-            # Perform the update operation
             game_db.update_one_document(
                 collection_name=self.game_collection_name,
                 query={"_id": self.game_id},
@@ -87,11 +83,36 @@ class HangmanGame:
         except Exception as e:
             print(f"An error occurred: {e}")
 
+    def guess_a_whole_word(self, word) -> None:
+        try:
+            if word.upper() == self.random_word:
+                self.game_status = "Won after the last chance"
+                update_dict = {
+                    "guessed_letters": self.guessed_letters,
+                    "guesses": self.guess_count,
+                    "hp": self.health_points,
+                    "game_status": self.game_status,
+                }
+                game_db.update_one_document(
+                    collection_name=self.game_collection_name,
+                    query={"_id": self.game_id},
+                    update=update_dict,
+                )
+            else:
+                self.game_status = "Lost"
+                update_dict = {
+                    "guessed_letters": self.guessed_letters,
+                    "guesses": self.guess_count,
+                    "hp": self.health_points,
+                    "game_status": self.game_status,
+                }
+                game_db.update_one_document(
+                    collection_name=self.game_collection_name,
+                    query={"_id": self.game_id},
+                    update=update_dict,
+                )
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
     def is_game_over(self) -> bool:
-        return self.game_status in ["Won", "Lost"]
-
-
-# we can add a new game to the database here
-# add updating functions here as well
-
-# if new_game > db.create_game(game_collection_name, word_collection_name, user_id)
+        return self.game_status in ["Won", "Lost", "Won after the last chance"]

@@ -1,1 +1,13 @@
-<h>Game Over</h>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Game Over</h1>
+    <p>Game status: 
+    {% if game.game_status == "Lost" %}
+        Unfortunately, you have been HANGED.... Your word was: {{ game.word }}
+        <img src="{{ url_for('static', filename='you_are_dead.png') }}" alt="You are dead">
+    {% else %}
+        Congratulations! You have won the game.... Your word was: {{ game.word }}
+    {% endif %}
+</p>
+{% endblock %}

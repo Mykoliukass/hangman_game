@@ -48,7 +48,33 @@ def newgame():
             }
 
             if hangman_game_instance.is_game_over():
-                return render_template("GameOver.html", user=current_user)
+                if (
+                    hangman_game_instance.health_points == 0
+                    or hangman_game_instance.guess_count == 0
+                ):
+                    return render_template("last_chance.html", user=current_user)
+                else:
+                    return render_template(
+                        "GameOver.html", user=current_user, game=game_document
+                    )
+
+        # Handling the whole word guess separately
+        whole_word_guess = request.form.get("whole_word")
+        if whole_word_guess:
+            hangman_game_instance.guess_a_whole_word(whole_word_guess)
+
+            if hangman_game_instance.is_game_over():
+                game_document = {
+                    "user_id": hangman_game_instance.user_id,
+                    "word": hangman_game_instance.random_word,
+                    "guesses": hangman_game_instance.guess_count,
+                    "hp": hangman_game_instance.health_points,
+                    "guessed_letters": hangman_game_instance.guessed_letters,
+                    "game_status": hangman_game_instance.game_status,
+                }
+                return render_template(
+                    "GameOver.html", user=current_user, game=game_document
+                )
 
     return render_template(
         "NewGame.html",

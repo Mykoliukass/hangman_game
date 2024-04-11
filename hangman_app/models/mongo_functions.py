@@ -88,7 +88,7 @@ class MongoCRUD:
         words = set()
 
         while len(words) < word_count:
-            word = random.choice(english_words)
+            word = random.choice(english_words).upper()
             if len(word) < 6 or len(word) > 13:
                 continue
             words.add(word)
@@ -103,9 +103,7 @@ class MongoCRUD:
             random_document_cursor = word_collection.aggregate(
                 [{"$sample": {"size": 1}}]
             )
-            random_document = next(
-                random_document_cursor
-            ) 
+            random_document = next(random_document_cursor)
             random_word = random_document["word"]
             return random_word
         except PyMongoError as err:
