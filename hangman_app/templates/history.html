@@ -1,17 +1,7 @@
-{% extends "base.html" %}
-
+{% extends "base.html" %} 
 {% block content %}
-<h1>Game Over</h1>
-    <p>Game status: 
-    {% if game.game_status == "Lost" %}
-        Unfortunately, you have been HANGED.... Your word was: {{ game.word }}
-        <img src="{{ url_for('static', filename='you_are_dead.png') }}" alt="You are dead">
-    {% else %}
-        Congratulations! You have won the game.... Your word was: {{ game.word }}
-    {% endif %}
-</p>
 
-<h2 style="font-size: 18px;">Games Played Today</h2> <!-- Adjust font size here -->
+<h2 style="font-size: 23px;">Game history</h2> <!-- Adjust font size here -->
 
 <table style="border-collapse: collapse; width: 100%;">
   <tr>
@@ -20,7 +10,7 @@
     <th style="border: 1px solid black; padding: 8px;">HP Left</th>
     <th style="border: 1px solid black; padding: 8px;">Guesses Left</th>
   </tr>
-  {% for game in today_games %}
+  {% for game in game_history %}
   <tr>
     <td style="border: 1px solid black; padding: 8px;">{{game.game_status}}</td>
     <td style="border: 1px solid black; padding: 8px;">{{game.word}}</td>
@@ -29,5 +19,4 @@
   </tr>
   {% endfor %}
 </table>
-
 {% endblock %}

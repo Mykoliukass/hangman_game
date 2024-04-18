@@ -5,6 +5,20 @@
 <div>
     <p>You have exhausted all your chances to guess individual letters.</p>
     <img src="{{ url_for('static', filename='health_0.png') }}" alt="You are dead">
+    <p>Word: 
+        {% for letter in game.word %}
+            {% if letter in game.guessed_letters %}
+                {{ letter }}
+            {% else %}
+                _
+            {% endif %}
+        {% endfor %}
+    </p>
+    <p>Chosen letters:
+        {% for letter in game.guessed_letters %}
+            {{ letter }}
+        {% endfor %}
+    </p>
     <p>Guess the whole word:</p>
     <form action="/NewGame" method="POST">
         <label for="whole_word">Enter the whole word:</label>

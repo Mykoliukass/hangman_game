@@ -30,11 +30,14 @@ class MongoCRUD:
             print(f"An error occurred: {err}")
 
     def find_documents(
-        self, collection_name: str, query: Dict
+        self, collection_name: str, query: Optional[Dict] = None
     ) -> Union[List[Dict], None]:
         try:
             collection = self.get_collection(collection_name)
-            documents = collection.find(query, {"_id": 0})
+            if query is None:
+                documents = collection.find({}, {"_id": 0})
+            else:
+                documents = collection.find(query, {"_id": 0})
             return list(documents)
         except PyMongoError as err:
             print(f"An error occurred: {err}")
@@ -108,3 +111,12 @@ class MongoCRUD:
             return random_word
         except PyMongoError as err:
             print(f"An error occurred while fetching random word: {err}")
+
+    def get_games_played_total(self, game_collection_name, user_id) -> list:
+        try:
+            game_collection = self.get_collection(game_collection_name)
+            query = {"user_id": user_id}
+            games_history = self.find_documents(game_collection_name, query) 
+            return games_history
+        except Exception as e:
+            print(f"An error occurred: {e}")

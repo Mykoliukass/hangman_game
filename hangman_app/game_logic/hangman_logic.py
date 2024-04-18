@@ -1,22 +1,29 @@
-from hangman_app import db, game_db
 from typing import Optional
 from pymongo.errors import PyMongoError
+from hangman_app import game_db
+from datetime import datetime
 
 
 class HangmanGame:
     GUESSES = 10
     HP = 6
 
+    @classmethod
+    def get_game_collection_name(cls):
+        return "hangman_games"
+
+    @classmethod
+    def get_word_collection_name(cls):
+        return "hangman_game_words"
+
     def __init__(
         self,
         user_id,
-        game_collection_name="hangman_games",
-        word_collection_name="hangman_game_words",
         guesses=GUESSES,
         health_points=HP,
     ):
-        self.game_collection_name = game_collection_name
-        self.word_collection_name = word_collection_name
+        self.game_collection_name = self.get_game_collection_name()
+        self.word_collection_name = self.get_word_collection_name()
         self.user_id = user_id
         self.random_word = None
         self.guessed_letters = []
@@ -24,9 +31,9 @@ class HangmanGame:
         self.guess_count = guesses
         self.health_points = health_points
         self.game_status = "Playing"
-        self.create_game(guesses, health_points)
+        self.create_game()
 
-    def create_game(self, guesses, health_points) -> Optional[str]:
+    def create_game(self) -> Optional[str]:
         try:
             collection = game_db.get_collection(
                 collection_name=self.game_collection_name
@@ -34,18 +41,25 @@ class HangmanGame:
             self.random_word = game_db.get_random_word(
                 word_collection_name=self.word_collection_name
             )
-            document = {
-                "user_id": self.user_id,
-                "guesses": guesses,
-                "hp": health_points,
-                "word": self.random_word,
-                "guessed_letters": self.guessed_letters,
-            }
+            document = self.get_game_document()
             result = collection.insert_one(document)
             self.game_id = result.inserted_id
             return str(result.inserted_id)
         except PyMongoError as err:
             print(f"An error occurred: {err}")
+
+    def get_game_document(self) -> dict:
+        current_datetime = datetime.now()
+        formatted_date = current_datetime.strftime("%Y-%m-%d")
+        return {
+            "user_id": self.user_id,
+            "guesses": self.guess_count,
+            "hp": self.health_points,
+            "word": self.random_word,
+            "guessed_letters": self.guessed_letters,
+            "game_status": self.game_status,
+            "game_date": formatted_date,
+        }
 
     def mask_word(self, word, guessed_letters) -> Optional[str]:
         masked_word = "".join(
@@ -116,3 +130,12 @@ class HangmanGame:
 
     def is_game_over(self) -> bool:
         return self.game_status in ["Won", "Lost", "Won after the last chance"]
+
+    def get_games_played_today(self) -> list:
+        try:
+            today_date = datetime.now().strftime("%Y-%m-%d")
+            query = {"user_id": self.user_id, "game_date": today_date}
+            games_today = game_db.find_documents(self.game_collection_name, query)
+            return games_today
+        except Exception as e:
+            print(f"An error occurred: {e}")
