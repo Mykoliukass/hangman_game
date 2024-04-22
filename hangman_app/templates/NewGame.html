@@ -1,19 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>New Game</h1>
-<div>
+<div style="margin-top: 40px;"></div>
+<h1 style="font-size: 75px; text-align: center;">Hang this man, {{user.first_name}}!</h1>
+<div style="margin-top: 40px;"></div>
+<div style="display: flex; align-items: flex-start;">
     <div id="health-images" style="text-align: right;">
         {% if game.hp >= 1 %}
-        <img src="{{ url_for('static', filename='health_' + (game.hp|string) + '.png') }}" alt="Health {{ game.hp }}">
-
+        <img src="{{ url_for('static', filename='health_' + (game.hp|string) + '.png') }}" alt="Health {{ game.hp }}" width="340" height="500">
         {% endif %}
     </div>
-    <div>
-        <p>User ID: {{ game.user_id }}</p>
-        <p>Number of Guesses: {{ game.guesses }}</p>
-        <p>Health Points: {{ game.hp }}</p>
-        <p>Word: 
+    <div style="margin-left: 20px;"> 
+        <p style="font-size: 25px;">Number of guesses left for you:
+            {% for i in range(10) %}
+                {% if i < game.guesses %}
+                    <img src="{{ url_for('static', filename='guess_active.png') }}" alt="guess_active" width="20" height="20">
+                {% else %}
+                    <img src="{{ url_for('static', filename='guess_lost.png') }}" alt="guess_lost" width="20" height="20">
+                {% endif %}
+            {% endfor %}
+        </p>
+        <p style="font-size: 25px;">Remaining wrong guesses until the man is dead: 
+            {% for _ in range(game.hp) %}
+              <img src="{{ url_for('static', filename='hp.png') }}" alt="Heart" width="20" height="20">
+            {% endfor %}
+          </p>
+        <p style="font-size: 25px;">Word: 
             {% for letter in game.word %}
                 {% if letter in game.guessed_letters %}
                     {{ letter }}
@@ -22,22 +34,29 @@
                 {% endif %}
             {% endfor %}
         </p>
-        <p>Chosen letters:
+        <p style="font-size: 25px;">Chosen letters:
             {% for letter in game.guessed_letters %}
                 {{ letter }}
             {% endfor %}
         </p>
-
         <div>
             {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-                {% if letter not in game.guessed_letters %}
+                {% if letter in game.guessed_letters %}
+                    {% if letter in game.word %}
+                        <button disabled style="margin: 5px; padding: 10px; font-size: 16px; width: 40px; height: 40px; text-align: center; font-weight: bold; background-color: lightgreen;">
+                            {{ letter }}
+                        </button>
+                    {% else %}
+                        <button disabled style="margin: 5px; padding: 10px; font-size: 16px; width: 40px; height: 40px; text-align: center; font-weight: bold; background-color: red;">
+                            {{ letter }}
+                        </button>
+                    {% endif %}
+                {% else %}
                     <form action="/NewGame" method="POST" style="display: inline;">
-                        <button type="submit" name="letter" value="{{ letter }}" {% if game.game_status != 'Playing' %}disabled{% endif %}>
+                        <button type="submit" name="letter" value="{{ letter }}" {% if game.game_status != 'Playing' %}disabled{% endif %} style="margin: 5px; padding: 10px; font-size: 16px; width: 40px; height: 40px; text-align: center; font-weight: bold; background-color: lightgrey;">
                             {{ letter }}
                         </button>
                     </form>
-                {% else %}
-                    <button disabled>{{ letter }}</button>
                 {% endif %}
             {% endfor %}
         </div>

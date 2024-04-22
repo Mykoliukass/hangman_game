@@ -31,7 +31,7 @@ def newgame():
 
     if request.method == "GET":
         user_id = current_user.id
-        hangman_game_instance = hangman_game_instance(user_id=user_id)
+        hangman_game_instance = HangmanGame(user_id=user_id)
         print("New game instance created:", hangman_game_instance)
         game_document = hangman_game_instance.get_game_document()
         chosen_letter = None
@@ -39,7 +39,6 @@ def newgame():
         chosen_letter = request.form.get("letter")
 
         if chosen_letter:
-            hangman_game_instance = hangman_game_instance(current_user.id)
             hangman_game_instance.make_a_guess(chosen_letter)
             game_document = hangman_game_instance.get_game_document()
 
@@ -61,7 +60,6 @@ def newgame():
 
         whole_word_guess = request.form.get("whole_word")
         if whole_word_guess:
-            hangman_game_instance = hangman_game_instance(current_user.id)
             hangman_game_instance.guess_a_whole_word(whole_word_guess)
 
             if hangman_game_instance.is_game_over():

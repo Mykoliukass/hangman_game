@@ -1,22 +1,28 @@
 {% extends "base.html" %} 
 {% block content %}
-
+<div style="margin-top: 20px;"></div>
 <h2 style="font-size: 23px;">Game history</h2> <!-- Adjust font size here -->
+<div style="margin-top: 20px;"></div>
 
 <table style="border-collapse: collapse; width: 100%;">
   <tr>
+    <th style="border: 1px solid black; padding: 8px;">Game Num.</th>
     <th style="border: 1px solid black; padding: 8px;">Game Status</th>
     <th style="border: 1px solid black; padding: 8px;">Word</th>
     <th style="border: 1px solid black; padding: 8px;">HP Left</th>
     <th style="border: 1px solid black; padding: 8px;">Guesses Left</th>
+    <th style="border: 1px solid black; padding: 8px;">Date</th>
   </tr>
   {% for game in game_history %}
   <tr>
-    <td style="border: 1px solid black; padding: 8px;">{{game.game_status}}</td>
+    <td style="border: 1px solid black; padding: 8px;">{{ loop.index }}</td>
+    <td style="border: 1px solid black; padding: 8px; {% if game.game_status == 'Won' %}background-color: lightgreen;{% elif game.game_status == 'Lost' %}background-color: lightcoral;{% endif %}">{{ game.game_status }}</td>
     <td style="border: 1px solid black; padding: 8px;">{{game.word}}</td>
     <td style="border: 1px solid black; padding: 8px;">{{game.hp}}</td>
     <td style="border: 1px solid black; padding: 8px;">{{game.guesses}}</td>
+    <td style="border: 1px solid black; padding: 8px;">{{game.game_date}}</td>
   </tr>
   {% endfor %}
 </table>
 {% endblock %}
+
