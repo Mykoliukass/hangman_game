@@ -171,12 +171,3 @@ class HangmanGame:
 
     def is_game_over(self) -> bool:
         return self.game_status in ["Won", "Lost", "Won after the last chance"]
-
-    def get_games_played_today(self) -> list:
-        try:
-            today_date = datetime.now().strftime("%Y-%m-%d")
-            query = {"user_id": self.user_id, "game_date": today_date}
-            games_today = game_db.find_documents(self.game_collection_name, query)
-            return games_today
-        except Exception as e:
-            print(f"An error occurred: {e}")

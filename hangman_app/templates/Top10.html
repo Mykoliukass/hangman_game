@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div style="margin-top: 20px;"></div>
+    <h2 style="font-size: 34px;">Top 10 Players with MOST Wins!</h2> <!-- Adjust font size here -->
+    <div style="margin-top: 20px;"></div>
+
+    <table style="border-collapse: collapse; width: 100%;">
+        <tr>
+            <th style="border: 1px solid black; padding: 8px;">Rank</th>
+            <th style="border: 1px solid black; padding: 8px;">Player Name</th>
+            <th style="border: 1px solid black; padding: 8px;">Wins</th>
+        </tr>
+        {% for index, player in enumerate(top10_players, start=1) %}
+        <tr>
+            <td style="border: 1px solid black; padding: 8px;">{{ index }}</td>
+            <td style="border: 1px solid black; padding: 8px;">{{ player.first_name }} {{ player.last_name }}</td>
+            <td style="border: 1px solid black; padding: 8px;">{{ player.wins }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div style="margin-top: 200px;"></div>
+    <h3 style="font-size: 25px;">If you are not here... WELL...</h3>
+    <img src="{{ url_for('static', filename='try_harder.png') }}" alt="Try Harder">
+{% endblock %}

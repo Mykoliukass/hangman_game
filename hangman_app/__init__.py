@@ -20,14 +20,17 @@ def create_app():
     app = Flask(__name__, static_folder="static")
     app.config["SECRET_KEY"] = "hjshjhdjah kjshkjdhjs"
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_NAME}"
+    app.jinja_env.globals["enumerate"] = enumerate
+
     db.init_app(app)
 
-    from .routes.routes import routes
+    from .routes.routes import main_routes
     from .routes.auth import auth
+    from .routes.game_route import game_route
 
-    app.register_blueprint(routes, url_prefix="/")
+    app.register_blueprint(main_routes, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
-
+    app.register_blueprint(game_route, url_prefix="/")
     from .models.models_sql import User
 
     with app.app_context():

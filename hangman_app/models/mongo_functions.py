@@ -13,6 +13,7 @@ from pymongo.errors import (
 from typing import List, Dict, Optional, Union
 from faker import Faker
 import random
+from datetime import datetime
 
 
 class MongoCRUD:
@@ -110,11 +111,17 @@ class MongoCRUD:
         except PyMongoError as err:
             print(f"An error occurred while fetching random word: {err}")
 
-    def get_games_played_total(self, game_collection_name, user_id) -> list:
-        try:
+    def get_games_played_today_or_to_date(
+        self, game_collection_name, user_id, today=False
+    ) -> list:
+        if today == False:
             game_collection = self.get_collection(game_collection_name)
             query = {"user_id": user_id}
             games_history = self.find_documents(game_collection_name, query)
             return games_history
-        except Exception as e:
-            print(f"An error occurred: {e}")
+        elif today == True:
+            today_date = datetime.now().strftime("%Y-%m-%d")
+            game_collection = self.get_collection(game_collection_name)
+            query = {"user_id": user_id, "game_date": today_date}
+            games_history = self.find_documents(game_collection_name, query)
+            return games_history

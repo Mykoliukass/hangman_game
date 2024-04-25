@@ -1,5 +1,33 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-    %}
-    <h1> This is a website for Hangman Game by M.J.</h1>
-    <h2> {{user.first_name}}</h2>
-    {% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="content-section">
+        <h1>Welcome to the Hangman Game!</h1>
+        <p>Get ready for a fun and challenging experience, {{ user.first_name }}!</p>
+        <p>In this game, you will test your guessing skills and try to save an innocent stickman. But beware—every wrong guess brings him closer to his doom!</p>
+        <p>Are you ready to take on the challenge and save the stickman?</p>
+        <img src="{{ url_for('static', filename='happy_stickman.jpg') }}" alt="Happy Stickman" class="centered-image">
+    </div>
+
+    <div class="bottom-section">
+        <p>If, for some reason, you don't even want to save the little guy... PLEASE FIND HELP!</p>
+        <img src="{{ url_for('static', filename='crazy.gif') }}" alt="Crazy Stickman" class="centered-image">
+    </div>
+
+    <style>
+        .content-section, .bottom-section {
+            text-align: center; /* Centers the text */
+            padding: 20px;
+            margin-bottom: 20px; /* Adds space between sections */
+        }
+
+        .centered-image {
+            width: 300px;
+            height: auto;
+            margin: 20px auto; /* Centers the image and adds space around it */
+            display: block;
+        }
+    </style>
+{% endblock %}

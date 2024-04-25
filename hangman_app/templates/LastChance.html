@@ -19,10 +19,9 @@
             {{ letter }}
         {% endfor %}
     </p>
-    <p>Guess the whole word:</p>
     <form action="/NewGame" method="POST">
         <label for="whole_word">Enter the whole word:</label>
-        <input type="text" id="whole_word" name="whole_word" required>
+        <input type="text" id="whole_word" name="whole_word" pattern="[a-zA-Z]{ {{ game.random_word|length }} }" maxlength="{{ game.random_word|length }}" required>
         <input type="submit" value="Submit">
     </form>
 </div>
