@@ -1,25 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Game Over</h1>
-    <p>Game status: 
+    <p> 
     {% if game.game_status == "Lost" %}
-        Unfortunately, you have been HANGED.... Your word was: {{ game.word }}
+    Unfortunately, you have been HANGED.... Your word was: {{ game.random_word }}
         <img src="{{ url_for('static', filename='you_are_dead.png') }}" alt="You are dead">
     {% else %}
-        Congratulations! You have won the game.... Your word was: {{ game.word }}
+        Congratulations! You have won the game.... Your word was: {{ game.random_word }}
     {% endif %}
 </p>
 
-<h2 style="font-size: 18px;">Games Played Today</h2> <!-- Adjust font size here -->
+<h2 style="font-size: 30px;">Games Played Today</h2> <!-- Adjust font size here -->
 
 <table style="border-collapse: collapse; width: 100%;">
   <tr>
-    <th style="border: 1px solid black; padding: 8px;">Game Num.</th>
-    <th style="border: 1px solid black; padding: 8px;">Game Status</th>
-    <th style="border: 1px solid black; padding: 8px;">Word</th>
-    <th style="border: 1px solid black; padding: 8px;">HP Left</th>
-    <th style="border: 1px solid black; padding: 8px;">Guesses Left</th>
+    <th style="border: 1px solid black; padding: 8px; font-size: 18px;">Game Num.</th>
+    <th style="border: 1px solid black; padding: 8px; font-size: 18px;">Game Status</th>
+    <th style="border: 1px solid black; padding: 8px; font-size: 18px;">Word</th>
+    <th style="border: 1px solid black; padding: 8px; font-size: 18px;">HP Left</th>
+    <th style="border: 1px solid black; padding: 8px; font-size: 18px;">Guesses Left</th>
   </tr>
   {% for game in today_games %}
   <tr>

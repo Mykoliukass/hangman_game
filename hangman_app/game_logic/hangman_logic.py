@@ -2,6 +2,7 @@ from typing import Optional
 from pymongo.errors import PyMongoError
 from hangman_app import game_db
 from datetime import datetime
+from bson import ObjectId
 
 
 class HangmanGame:
@@ -31,7 +32,7 @@ class HangmanGame:
         self.guess_count = guesses
         self.health_points = health_points
         self.game_status = "Playing"
-        self.create_game()
+        self.game_date = self.get_date()
 
     def create_game(self) -> Optional[str]:
         try:
@@ -48,9 +49,23 @@ class HangmanGame:
         except PyMongoError as err:
             print(f"An error occurred: {err}")
 
+    def get_date(self) -> str:
+        current_datetime = datetime.now()
+        formatted_date = current_datetime.strftime("%Y-%m-%d")
+        return formatted_date
+
     def get_game_document(self) -> dict:
         current_datetime = datetime.now()
         formatted_date = current_datetime.strftime("%Y-%m-%d")
+        game_doc = {
+            "user_id": self.user_id,
+            "guesses": self.guess_count,
+            "hp": self.health_points,
+            "word": self.random_word,
+            "guessed_letters": self.guessed_letters,
+            "game_status": self.game_status,
+            "game_date": formatted_date,
+        }
         return {
             "user_id": self.user_id,
             "guesses": self.guess_count,
@@ -60,6 +75,32 @@ class HangmanGame:
             "game_status": self.game_status,
             "game_date": formatted_date,
         }
+
+    def to_json(self) -> dict:
+        return {
+            "user_id": self.user_id,
+            "random_word": self.random_word,
+            "guessed_letters": self.guessed_letters,
+            "guesses": self.guess_count,
+            "game_id": str(self.game_id),
+            "health_points": self.health_points,
+            "game_status": self.game_status,
+            "game_date": self.game_date,
+        }
+
+    @classmethod
+    def from_json(cls, jsonified_game: dict) -> "HangmanGame":
+        hangman_instance = cls(
+            user_id=jsonified_game["user_id"],
+            guesses=jsonified_game["guesses"],
+            health_points=jsonified_game["health_points"],
+        )
+        hangman_instance.random_word = jsonified_game["random_word"]
+        hangman_instance.guessed_letters = jsonified_game["guessed_letters"]
+        hangman_instance.game_id = jsonified_game["game_id"]
+        hangman_instance.game_status = jsonified_game["game_status"]
+        hangman_instance.game_date = jsonified_game["game_date"]
+        return hangman_instance
 
     def mask_word(self, word, guessed_letters) -> Optional[str]:
         masked_word = "".join(
@@ -91,7 +132,7 @@ class HangmanGame:
             }
             game_db.update_one_document(
                 collection_name=self.game_collection_name,
-                query={"_id": self.game_id},
+                query={"_id": ObjectId(self.game_id)},
                 update=update_dict,
             )
         except Exception as e:

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from hangman_app.models.models_sql import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from hangman_app import db
@@ -31,6 +31,7 @@ def login():
 @auth.route("/logout")
 @login_required
 def logout():
+    session.clear()
     logout_user()
     return redirect(url_for("auth.login"))
 

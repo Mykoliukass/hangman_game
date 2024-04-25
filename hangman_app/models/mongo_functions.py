@@ -83,11 +83,9 @@ class MongoCRUD:
             print(f"An error occurred: {err}")
 
     def generate_and_insert_words(self, collection_name: str, word_count: int):
-        with open(
-            "Z:\CodeAcademy\hangman_game\hangman_app\extra_files/english_words.txt", "r"
-        ) as file:
+        with open("extra_files/english_words.txt", "r") as file:
             english_words = [line.strip() for line in file]
-
+        # geriau daryt relative path, geriau path pasilikt kaip konstantą kažkur
         words = set()
 
         while len(words) < word_count:
@@ -116,7 +114,7 @@ class MongoCRUD:
         try:
             game_collection = self.get_collection(game_collection_name)
             query = {"user_id": user_id}
-            games_history = self.find_documents(game_collection_name, query) 
+            games_history = self.find_documents(game_collection_name, query)
             return games_history
         except Exception as e:
             print(f"An error occurred: {e}")
