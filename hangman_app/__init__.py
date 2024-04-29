@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
@@ -23,6 +23,18 @@ def create_app():
     app.jinja_env.globals["enumerate"] = enumerate
 
     db.init_app(app)
+
+    @app.errorhandler(400)
+    def handle_400_error(error):
+        return render_template("400.html"), 400
+
+    @app.errorhandler(404)
+    def handle_404_error(error):
+        return render_template("404.html"), 404
+
+    @app.errorhandler(500)
+    def handle_500_error(error):
+        return render_template("500.html"), 500
 
     from .routes.routes import main_routes
     from .routes.auth import auth
@@ -60,4 +72,3 @@ def create_app():
 def create_database(app):
     if not path.exists("website/" + DB_NAME):
         db.create_all(app=app)
-        print("Created Database!")
