@@ -9,9 +9,31 @@ _Please be kind with your reviews_
 1. **_INSTALL DOCKER _**
 2. Open VS Code or any other IDE you like, **compatible** with python.
 3. Open **Bash** terminal!
-4. Run this comand:
+4. Install pip if you do not have it installed:
 
 ```python
-winget install Python.Python.3
+winget install Python.Python.3 #for Windows
+```
 
+```python
+sudo apt update
+sudo apt install python3 #for Ubuntu
+```
 
+5. Install the requirements:
+
+```python
+pip install -r requirements.txt
+```
+
+6. Run the tests to see if nothing important has been changed. If something is wrong please contact the developer of this project(a.k.a. me, Mykoliukass)
+
+```shell
+./run_tests.sh
+```
+
+7. If tests are OK, run this comand, open the link from the terminal and play!
+
+```shell
+./start_app.sh
+```
