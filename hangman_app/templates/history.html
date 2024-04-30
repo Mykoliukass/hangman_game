@@ -1,28 +1,68 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
+
 {% block content %}
-<div style="margin-top: 20px;"></div>
-<h2 style="font-size: 34px;">Game history</h2> <!-- Adjust font size here -->
-<div style="margin-top: 20px;"></div>
+<div class="game-history-container">
+    <h2 class="game-history-title">Game History</h2>
 
-<table style="border-collapse: collapse; width: 100%;">
-  <tr>
-    <th style="border: 1px solid black; padding: 8px;">Game Num.</th>
-    <th style="border: 1px solid black; padding: 8px;">Game Status</th>
-    <th style="border: 1px solid black; padding: 8px;">Word</th>
-    <th style="border: 1px solid black; padding: 8px;">HP Left</th>
-    <th style="border: 1px solid black; padding: 8px;">Guesses Left</th>
-    <th style="border: 1px solid black; padding: 8px;">Date</th>
-  </tr>
-  {% for game in game_history %}
-  <tr>
-    <td style="border: 1px solid black; padding: 8px;">{{ loop.index }}</td>
-    <td style="border: 1px solid black; padding: 8px; {% if game.game_status == 'Won' %}background-color: lightgreen;{% elif game.game_status == 'Lost' %}background-color: lightcoral;{% endif %}">{{ game.game_status }}</td>
-    <td style="border: 1px solid black; padding: 8px;">{{game.word}}</td>
-    <td style="border: 1px solid black; padding: 8px;">{{game.hp}}</td>
-    <td style="border: 1px solid black; padding: 8px;">{{game.guesses}}</td>
-    <td style="border: 1px solid black; padding: 8px;">{{game.game_date}}</td>
-  </tr>
-  {% endfor %}
-</table>
+    <table class="game-history-table">
+        <thead>
+            <tr>
+                <th>Game Num.</th>
+                <th>Game Status</th>
+                <th>Word</th>
+                <th>HP Left</th>
+                <th>Guesses Left</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for game in game_history %}
+            <tr class="{% if game.game_status == 'Won' %}status-won{% elif game.game_status == 'Lost' %}status-lost{% endif %}">
+                <td>{{ loop.index }}</td>
+                <td>{{ game.game_status }}</td>
+                <td>{{ game.word }}</td>
+                <td>{{ game.hp }}</td>
+                <td>{{ game.guesses }}</td>
+                <td>{{ game.game_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- CSS -->
+<style>
+    /* General styles */
+    .game-history-container {
+        margin-top: 20px;
+        padding: 20px;
+    }
+
+    .game-history-title {
+        font-size: 34px;
+        margin-bottom: 20px;
+    }
+
+    /* Table styles */
+    .game-history-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    /* Status row coloring */
+    .status-won {
+        background-color: lightgreen;
+    }
+
+    .status-lost {
+        background-color: lightcoral;
+    }
+</style>
+
 {% endblock %}
-
