@@ -1,29 +1,33 @@
-# Check if MongoDB container is already running
-if [ "$(docker ps -q -f name=hangman_games-mongo)" ]; then
+#!/bin/bash
+
+eval $(python extract_config.py)
+
+if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
     echo "MongoDB container is already running."
 else
-    # Start MongoDB Docker container if not already running
-    docker start hangman_games-mongo
-    echo "MongoDB container started."
+    if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
+        docker start $CONTAINER_NAME
+        echo "MongoDB container started."
+    else
+        docker run -d --name $CONTAINER_NAME -p 27017:27017 $IMAGE_NAME
+        echo "New MongoDB container created and started."
+    fi
 fi
 
-# Wait for a few seconds to ensure MongoDB is running
+echo "Waiting for MongoDB to start..."
 sleep 5
 
-# Run the tests
 echo "Running tests..."
 python -m unittest discover -s tests -p "test_*.py"
 
-# Check the exit status of the tests
 if [ $? -eq 0 ]; then
     echo "Tests completed successfully."
 else
     echo "Tests failed."
 fi
 
-# Stop MongoDB server
-echo "Stopping MongoDB server..."
-# Update the command below to stop your MongoDB server
-docker stop hangman_games-mongo
+echo "Stopping MongoDB container..."
+docker stop $CONTAINER_NAME
 echo "MongoDB container stopped."
+
 echo "Done."

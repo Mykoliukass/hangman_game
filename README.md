@@ -29,7 +29,7 @@ python -m venv .venv
 6. Install the requirements:
 
 ```python
-pip install -r requirements.txt
+pip install -r configurations/requirements.txt
 ```
 
 7. Run the tests to see if nothing important has been changed. If something is wrong please contact the developer of this project(a.k.a. me, Mykoliukass)
