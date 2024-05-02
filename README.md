@@ -1,4 +1,4 @@
-# hangman_game
+# HANGMAN GAME
 
 ## Final project for CodeAcademy Python Beginner courses - Full-Scale Hangman game
 
