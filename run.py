@@ -1,6 +1,11 @@
 from hangman_app import create_app
+from configurations import configurations
 
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(
+        host=configurations.FLASK_HOST,
+        port=configurations.FLASK_PORT,
+        debug=True,
+    )

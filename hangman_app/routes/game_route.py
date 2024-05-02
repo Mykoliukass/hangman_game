@@ -8,13 +8,15 @@ from flask import (
     url_for,
 )
 from flask_login import login_required, current_user
-
+from bson import ObjectId
+from configurations import configurations
 from hangman_app import game_db
 from hangman_app.game_logic.hangman_logic import HangmanGame
-from hangman_app.logging.logging_module import (
+from hangman_app.logging_data.logging_module import (
     get_game_report_logger,
     get_error_reporting_logger,
 )
+
 
 game_report_logger = get_game_report_logger()
 error_reporting_logger = get_error_reporting_logger()
@@ -28,9 +30,18 @@ def newgame():
     try:
         if request.method == "GET":
             if "hangman_game" not in session:
+                # this whole mess creates a new game and adds it to the database. This is not made via hangman_logic, just to make hangman_logic to be a bit more universal.
                 user_id = current_user.id
                 hangman_game_instance = HangmanGame(user_id=user_id)
-                hangman_game_instance.create_game()
+                collection = game_db.get_collection(
+                    collection_name=configurations.GAME_COLLECTION_NAME
+                )
+                hangman_game_instance.random_word = game_db.get_random_word(
+                    word_collection_name=configurations.WORD_COLLECTION_NAME
+                )
+                document = hangman_game_instance.create_game()
+                result = collection.insert_one(document)
+                hangman_game_instance.game_id = result.inserted_id
                 game_report_logger.info("User %s started a new game", current_user.id)
                 game_json = hangman_game_instance.to_json()
                 session["hangman_game"] = game_json
@@ -55,14 +66,18 @@ def newgame():
 
             chosen_letter = request.form.get("letter")
             if chosen_letter:
-                hangman_game_instance.make_a_guess(chosen_letter)
+                dictionary_after_guess = hangman_game_instance.make_a_guess(
+                    chosen_letter
+                )
+                game_db.update_one_document(
+                    collection_name=configurations.GAME_COLLECTION_NAME,
+                    query={"_id": ObjectId(hangman_game_instance.game_id)},
+                    update=dictionary_after_guess,
+                )
                 session["hangman_game"] = hangman_game_instance.to_json()
 
                 if hangman_game_instance.is_game_over():
-                    if (
-                        hangman_game_instance.health_points == 0
-                        or hangman_game_instance.guess_count == 0
-                    ) and hangman_game_instance.game_status != "Won":
+                    if hangman_game_instance.is_last_chance_needed():
                         return render_template(
                             "LastChance.html",
                             user=current_user,
@@ -75,7 +90,7 @@ def newgame():
                             game=hangman_game_instance.to_json(),
                             today_games=game_db.get_games_played_today_or_to_date(
                                 user_id=current_user.id,
-                                game_collection_name=HangmanGame.get_game_collection_name(),
+                                game_collection_name=configurations.GAME_COLLECTION_NAME,
                                 today=True,
                             ),
                         )
@@ -84,7 +99,14 @@ def newgame():
 
             whole_word_guess = request.form.get("whole_word")
             if whole_word_guess:
-                hangman_game_instance.guess_a_whole_word(whole_word_guess)
+                document_after_guess = hangman_game_instance.guess_a_whole_word(
+                    whole_word_guess
+                )
+                game_db.update_one_document(
+                    collection_name=configurations.GAME_COLLECTION_NAME,
+                    query={"_id": ObjectId(hangman_game_instance.game_id)},
+                    update=document_after_guess,
+                )
                 session["hangman_game"] = hangman_game_instance.to_json()
 
                 if hangman_game_instance.is_game_over():
@@ -94,7 +116,7 @@ def newgame():
                         game=hangman_game_instance.to_json(),
                         today_games=game_db.get_games_played_today_or_to_date(
                             user_id=current_user.id,
-                            game_collection_name=HangmanGame.get_game_collection_name(),
+                            game_collection_name=configurations.GAME_COLLECTION_NAME,
                             today=True,
                         ),
                     )

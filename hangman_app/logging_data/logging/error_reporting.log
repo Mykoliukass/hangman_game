@@ -1,0 +1,36 @@
+2024-05-02 09:00:05,852 - error_reporting_logger - ERROR - An error occurred: 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "Z:\CodeAcademy\hangman_game\hangman_app\routes\game_route.py", line 112, in newgame
+    return render_template(
+           ^^^^^^^^^^^^^^^^
+  File "Z:\CodeAcademy\hangman_game\.venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "Z:\CodeAcademy\hangman_game\.venv\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "Z:\CodeAcademy\hangman_game\.venv\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "Z:\CodeAcademy\hangman_game\.venv\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\CodeAcademy\hangman_game\hangman_app\templates\NewGame.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\CodeAcademy\hangman_game\hangman_app\templates\base.html", line 65, in top-level template code
+    <div class="container">{% block content %} {% endblock %}</div>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "Z:\CodeAcademy\hangman_game\hangman_app\templates\NewGame.html", line 29, in block 'content'
+    {% for letter in game.word %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not iterable
+2024-05-02 15:03:55,277 - error_reporting_logger - ERROR - An error occurred: 'HangmanGame' object has no attribute 'create_game'
+Traceback (most recent call last):
+  File "Z:\CodeAcademy\hangman_game\hangman_app\routes\game_route.py", line 39, in newgame
+    document = hangman_game_instance.create_game()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'HangmanGame' object has no attribute 'create_game'
+2024-05-02 15:05:16,349 - error_reporting_logger - ERROR - An error occurred: type object 'HangmanGame' has no attribute 'get_game_collection_name'
+Traceback (most recent call last):
+  File "Z:\CodeAcademy\hangman_game\hangman_app\routes\game_route.py", line 83, in newgame
+    game_collection_name=HangmanGame.get_game_collection_name(),
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'HangmanGame' has no attribute 'get_game_collection_name'

@@ -6,7 +6,7 @@ _Please be kind with your reviews_
 
 ### This is what you need to do after downloading this project in order to play my fantastic hangman game:
 
-1. **_INSTALL DOCKER _**
+1. **INSTALL DOCKER**
 2. Open VS Code or any other IDE you like, **compatible** with python.
 3. Open **Bash** terminal!
 4. Install pip if you do not have it installed:

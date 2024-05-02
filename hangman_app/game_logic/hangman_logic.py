@@ -1,9 +1,7 @@
 from typing import Optional
-from pymongo.errors import PyMongoError
-from bson import ObjectId
-from hangman_app import game_db
-from hangman_app.logging.logging_module import get_game_logic_error_logger
+from hangman_app.logging_data.logging_module import get_game_logic_error_logger
 from datetime import datetime
+from configurations import configurations
 
 game_logic_error_logger = get_game_logic_error_logger()
 
@@ -12,22 +10,14 @@ class HangmanGame:
     GUESSES = 10
     HP = 6
 
-    @classmethod
-    def get_game_collection_name(cls):
-        return "hangman_games"
-
-    @classmethod
-    def get_word_collection_name(cls):
-        return "hangman_game_words"
-
     def __init__(
         self,
         user_id,
         guesses=GUESSES,
         health_points=HP,
     ):
-        self.game_collection_name = self.get_game_collection_name()
-        self.word_collection_name = self.get_word_collection_name()
+        self.game_collection_name = configurations.GAME_COLLECTION_NAME
+        self.word_collection_name = configurations.WORD_COLLECTION_NAME
         self.user_id = user_id
         self.random_word = None
         self.guessed_letters = []
@@ -39,17 +29,9 @@ class HangmanGame:
 
     def create_game(self) -> Optional[str]:
         try:
-            collection = game_db.get_collection(
-                collection_name=self.game_collection_name
-            )
-            self.random_word = game_db.get_random_word(
-                word_collection_name=self.word_collection_name
-            )
             document = self.get_game_document()
-            result = collection.insert_one(document)
-            self.game_id = result.inserted_id
-            return str(result.inserted_id)
-        except PyMongoError as e:
+            return document
+        except Exception as e:
             game_logic_error_logger.error(
                 "Failed to create game: %s", str(e), exc_info=True
             )
@@ -141,12 +123,8 @@ class HangmanGame:
                 "hp": self.health_points,
                 "game_status": self.game_status,
             }
-            game_db.update_one_document(
-                collection_name=self.game_collection_name,
-                query={"_id": ObjectId(self.game_id)},
-                update=update_dict,
-            )
-        except PyMongoError as e:
+            return update_dict
+        except Exception as e:
             game_logic_error_logger.error(
                 "Failed to make a guess: %s", str(e), exc_info=True
             )
@@ -161,11 +139,7 @@ class HangmanGame:
                     "hp": self.health_points,
                     "game_status": self.game_status,
                 }
-                game_db.update_one_document(
-                    collection_name=self.game_collection_name,
-                    query={"_id": ObjectId(self.game_id)},
-                    update=update_dict,
-                )
+                return update_dict
             else:
                 self.game_status = "Lost"
                 update_dict = {
@@ -174,15 +148,19 @@ class HangmanGame:
                     "hp": self.health_points,
                     "game_status": self.game_status,
                 }
-                game_db.update_one_document(
-                    collection_name=self.game_collection_name,
-                    query={"_id": ObjectId(self.game_id)},
-                    update=update_dict,
-                )
-        except PyMongoError as e:
+                return update_dict
+        except Exception as e:
             game_logic_error_logger.error(
                 "Failed to guess whole word: %s", str(e), exc_info=True
             )
 
     def is_game_over(self) -> bool:
         return self.game_status in ["Won", "Lost", "Won after the last chance"]
+
+    def is_last_chance_needed(self) -> bool:
+        if self.game_status != "Won" and (
+            self.health_points == 0 or self.guess_count == 0
+        ):
+            return True
+        else:
+            return False

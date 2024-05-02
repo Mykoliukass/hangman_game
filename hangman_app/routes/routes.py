@@ -4,9 +4,9 @@ from flask import Blueprint, render_template, redirect, flash, url_for
 from flask_login import login_required, current_user
 from hangman_app import game_db
 from hangman_app.game_logic.hangman_logic import HangmanGame
-from hangman_app.logging.logging_module import get_error_reporting_logger
+from hangman_app.logging_data.logging_module import get_error_reporting_logger
 from hangman_app.models.models_sql import User
-
+from configurations import configurations
 
 main_routes = Blueprint("main_routes", __name__)
 error_reporting_logger = get_error_reporting_logger()
@@ -23,7 +23,7 @@ def home():
 def history():
     game_history = game_db.get_games_played_today_or_to_date(
         user_id=current_user.id,
-        game_collection_name=HangmanGame.get_game_collection_name(),
+        game_collection_name=configurations.GAME_COLLECTION_NAME,
     )
     return render_template("history.html", user=current_user, game_history=game_history)
 
@@ -34,7 +34,7 @@ def get_top_10():
     try:
         # Retrieve winning games
         win_games = game_db.find_documents(
-            collection_name=HangmanGame.get_game_collection_name(),
+            collection_name=configurations.GAME_COLLECTION_NAME,
             query={"game_status": {"$in": ["Won", "Won after the last chance"]}},
         )
 
