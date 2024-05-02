@@ -20,19 +20,25 @@ sudo apt update
 sudo apt install python3 #for Ubuntu
 ```
 
-5. Install the requirements:
+5. Open virtual environment
+
+```python
+python -m venv .venv
+```
+
+6. Install the requirements:
 
 ```python
 pip install -r requirements.txt
 ```
 
-6. Run the tests to see if nothing important has been changed. If something is wrong please contact the developer of this project(a.k.a. me, Mykoliukass)
+7. Run the tests to see if nothing important has been changed. If something is wrong please contact the developer of this project(a.k.a. me, Mykoliukass)
 
 ```shell
 ./run_tests.sh
 ```
 
-7. If tests are OK, run this comand, open the link from the terminal and play!
+8. If tests are OK, run this comand, open the link from the terminal and play!
 
 ```shell
 ./start_app.sh
